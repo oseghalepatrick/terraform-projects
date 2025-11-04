@@ -20,6 +20,7 @@ module "aws_redshift_cluster" {
   rs_master_pass           = var.rs_master_pass
   rs_nodetype              = var.rs_nodetype
   rs_cluster_type          = var.rs_cluster_type
+  rs_number_of_nodes       = var.rs_number_of_nodes
   redshift_subnet_group_id = aws_redshift_subnet_group.redshift_subnet_group.id
   redshift_iam_role_arn    = [aws_iam_role.ec2_role.arn]
   rs_tag                   = var.rs_tag

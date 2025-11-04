@@ -13,7 +13,8 @@ resource "aws_iam_role" "ec2_role" {
             "Service": [
               "ec2.amazonaws.com",
               "redshift.amazonaws.com",
-              "redshift-serverless.amazonaws.com"
+              "redshift-serverless.amazonaws.com",
+              "scheduler.redshift.amazonaws.com"
             ]
         },
         "Action": "sts:AssumeRole"
@@ -47,4 +48,35 @@ resource "aws_iam_role_policy_attachment" "redshift_attachment" {
 resource "aws_iam_role_policy_attachment" "emr_attachment" {
   role       = aws_iam_role.ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEMRFullAccessPolicy_v2"
+}
+
+# Allow the Redshift scheduler to use this role (PassRole + scheduled actions)
+resource "aws_iam_role_policy" "redshift_scheduler_permissions" {
+  name = "AllowRedshiftSchedulerPassRole"
+  role = aws_iam_role.ec2_role.name
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "AllowPassThisRoleToRedshift",
+        Effect = "Allow",
+        Action = "iam:PassRole",
+        Resource = aws_iam_role.ec2_role.arn
+      },
+      {
+        Sid    = "AllowRedshiftScheduledActions",
+        Effect = "Allow",
+        Action = [
+          "redshift:CreateScheduledAction",
+          "redshift:DeleteScheduledAction",
+          "redshift:DescribeScheduledActions",
+          "redshift:PauseCluster",
+          "redshift:ResumeCluster",
+          "redshift:ResizeCluster"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
 }

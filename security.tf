@@ -4,7 +4,7 @@ resource "aws_vpc" "de_vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name = "data-team-airflow-instance"
+    Name = "airflow-instance"
   }
 }
 

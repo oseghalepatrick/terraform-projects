@@ -10,6 +10,8 @@ variable "rs_nodetype" {}
 
 variable "rs_cluster_type" {}
 
+variable "rs_number_of_nodes" {}
+
 variable "rs_tag" {}
 
 variable "redshift_subnet_group_id" {}

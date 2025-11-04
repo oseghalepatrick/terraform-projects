@@ -5,7 +5,7 @@ provider "aws" {
 
 resource "aws_key_pair" "this" {
   key_name   = "airflow-key"
-  public_key = file("~/.ssh/airflow-key.pub")
+  public_key = file("~/.ssh/id_rsa.pub")
 }
 
 resource "aws_instance" "this" {
@@ -43,7 +43,7 @@ resource "aws_instance" "this" {
     command = templatefile("modules/ec2/${var.host_os}-ssh-config.tpl", {
       hostname     = self.public_ip,
       user         = "ubuntu",
-      identityfile = "~/.ssh/airflow-key"
+      identityfile = "~/.ssh/id_rsa"
     })
     interpreter = var.host_os == "windows" ? ["Powershell", "-Command"] : ["bash", "-c"]
   }
